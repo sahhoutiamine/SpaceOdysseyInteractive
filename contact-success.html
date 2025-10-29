@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Space Odyssey</title>
+  <link rel="stylesheet" href="contact-success-style.css" />
+</head>
+<body>
+    <nav class="navbar">
+        <div class="header-section">
+            <div class="logo-text">
+                <div class="name">CHARLS OSTMAN</div>
+                <div class="title">Historian of the Future</div>
+            </div>
+        </div>
+        
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li class="social-icons">
+                    <a href="#"><img src="images/instagram.png" alt="Instagram"></a>
+                    <a href="#"><img src="images/twitter.png" alt="Twitter"></a>
+                    <a href="#"><img src="images/facebook.png" alt="Facebook"></a>
+                </li>
+                <li><a id="links" href="index.html">HOME</a></li>
+                <li><a id="links" href="about.html">ABOUT</a></li>
+                <li><a id="links" href="missions.html">MISSIONS</a></li>
+                <li><a id="links" href="planets.html">PLANETS</a></li>
+                <li><a id="links" href="contact.html" class="active">CONTACT US</a></li>
+            </ul>
+        </div>
+    </nav>
+
+<section class="modal-section">
+    <div class="modal-container">
+        <div class="success-message">
+            Massage send successfully
+        </div>
+        <button class="done-button">Done</button>
+    </div>
+
+</section>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-columns">
+                <div class="footer-col">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookies</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Information</h3>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Support</a></li>
+                    </ul>
+                </div>  
+                <div class="footer-col">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Contact us</a></li>
+                    </ul>
+                </div>  
+                <div class="footer-subscribe">
+                    <h3>Subscribe</h3>
+                    <input type="email" placeholder="Email address" />
+                </div>
+            </div>
+            <hr class="footer-line">
+            <div class="footer-bottom">
+                <div class="footer-left">
+                    <a href="#"><img src="images/logo.png" alt="Logo" class="footer-logo"></a>
+                    <p>CHARLS OSTMAN<br><span>Historian of the Future</span></p>
+                </div>
+                <div class="footer-center">
+                    <a href="#">Terms</a>
+                    <a href="#">Privacy</a>
+                    <a href="#">Cookies</a>
+                </div>
+                <div class="footer-right">
+                    <a href="#"><img src="images/instagram-colored.png" alt="LinkedIn"></a>
+                    <a href="#"><img src="images/facebook-colored.png" alt="Facebook"></a>
+                    <a href="#"><img src="images/twitter-colored.png" alt="Twitter"></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Add active class to clicked nav link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function() {
+                document.querySelectorAll('.nav-links a').forEach(item => {
+                    item.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
