@@ -5,21 +5,15 @@
   font-family: "Poppins", sans-serif;
 }
 
-/* Reset all elements to remove default margins/padding and set consistent box model */
-/* Set Poppins as default font family for entire page */
-
 body {
   background-color: #ffffff;
   color: white;
 }
 
-/* Set white background and default white text color */
-
-/* -------Navbar------- */
 .navbar {
   background: url(images/stars-space-darkness.jpg) no-repeat center center/cover;
-  padding-top: 20px;
-  height: 132px;
+  padding: 20px;
+  min-height: 132px;
   display: flex;
   position: sticky;
   top: -85px;
@@ -29,25 +23,16 @@ body {
   z-index: 1000;
 }
 
-/* Navbar with space-themed background image */
-/* Sticky positioning that hides partially off-screen (top: -85px) */
-/* Flex column layout for header and navigation links */
-/* Semi-transparent border and shadow for depth */
-/* High z-index to ensure navbar stays on top */
-
 .header-section {
   display: flex;
   align-items: flex-end;
+  justify-content: space-between;
 }
-
-/* Flex container for logo and name/title */
 
 .logo-text {
   display: flex;
   flex-direction: column;
 }
-
-/* Stack name and title vertically */
 
 .name {
   font-size: 1.8rem;
@@ -57,8 +42,6 @@ body {
   margin-bottom: 0.25rem;
 }
 
-/* Large, bold name text with letter spacing for style */
-
 .title {
   font-size: 1rem;
   font-weight: 300;
@@ -67,13 +50,37 @@ body {
   text-transform: uppercase;
 }
 
-/* Subtitle with lighter weight, semi-transparent, uppercase */
+.burger-menu {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 5px;
+  z-index: 1001;
+}
+
+.burger-menu span {
+  width: 30px;
+  height: 3px;
+  background-color: white;
+  transition: all 0.3s ease;
+  border-radius: 3px;
+}
+
+.burger-menu.active span:nth-child(1) {
+  transform: rotate(45deg) translate(8px, 8px);
+}
+
+.burger-menu.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.burger-menu.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(8px, -8px);
+}
 
 .nav-container {
   width: 100%;
 }
-
-/* Full width container for navigation links */
 
 .nav-links {
   display: flex;
@@ -83,12 +90,8 @@ body {
   width: 100%;
   justify-self: end;
   padding: 0.75rem 1.5rem;
-  height: 45px;
+  min-height: 45px;
 }
-
-/* Navigation links container with semi-transparent white background */
-/* Flex layout for horizontal navigation */
-/* Fixed height and padding for consistent appearance */
 
 .nav-links a {
   text-decoration: none;
@@ -103,22 +106,13 @@ body {
   text-align: center;
 }
 
-/* Navigation link styles */
-/* Semi-transparent black text with hover effects */
-/* Flex: 1 makes links evenly distribute space */
-/* Centered text with padding */
-
 .nav-links a:hover {
   color: black;
 }
 
-/* Darker text color on hover */
-
 .nav-links a:hover::after {
   width: 80%;
 }
-
-/* Underline animation on hover (though ::after not defined in this snippet) */
 
 .nav-links #links.active {
   background-color: black;
@@ -126,26 +120,18 @@ body {
   border-radius: 8px;
 }
 
-/* Active state for navigation links - black background, white text */
-
 .nav-links a.active::after {
   width: 80%;
   background-color: white;
 }
 
-/* Active link underline styling */
-
 .nav-links li:first-child {
   margin-left: auto;
 }
 
-/* First navigation item pushed to the right */
-
 .nav-links li {
   margin-left: 8%;
 }
-
-/* Space between navigation items */
 
 .social-icons {
   display: flex;
@@ -154,10 +140,6 @@ body {
   margin-right: auto;
 }
 
-/* Social media icons container */
-/* Flex layout with gap between icons */
-/* Auto margin right pushes content to the left */
-
 .social-icons img {
   width: 22px;
   height: 22px;
@@ -165,131 +147,92 @@ body {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* Social icon images with consistent size */
-/* Hover effects for interactivity */
-
 .social-icons img:hover {
   transform: scale(1.2);
   opacity: 0.8;
 }
 
-/* Scale and fade effect on hover */
-
-/* -------Footer------- */
 .footer {
-    background: url(images/stars-space-darkness.jpg) no-repeat center center/cover;
-    padding: 60px 10%;
+  background: url(images/stars-space-darkness.jpg) no-repeat center center/cover;
+  padding: 60px 10%;
 }
-
-/* Footer with same space background as navbar */
-/* Ample padding for content spacing */
 
 .footer-content {
-    max-width: 1200px;
-    margin: 0 auto;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* Center footer content with max width */
-
-.footer-columns{
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 50px;
+.footer-columns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 50px;
 }
-
-/* 4-column grid layout for footer sections */
-/* Large gap between columns */
 
 .footer-col h3 {
-    font-size: 1.1rem;
-    margin-bottom: 15px;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
 }
-
-/* Footer column headings */
 
 .footer-col ul {
-    list-style: none;
-    padding: 0;
+  list-style: none;
+  padding: 0;
 }
-
-/* Remove default list styling */
 
 .footer-col ul li {
-    margin: 8px 0
+  margin: 8px 0;
 }
-
-/* Space between footer list items */
 
 .footer-col ul li a {
-    color: #ccc;
-    text-decoration: none;
-    transition: 0.3s;
+  color: #ccc;
+  text-decoration: none;
+  transition: 0.3s;
 }
-
-/* Footer links with light gray color and hover transition */
 
 .footer-col ul li a:hover {
-    color: #fff;
+  color: #fff;
 }
-
-/* White color on hover */
 
 .footer-subscribe input {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 6px;
-    font-size: 0.9rem;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
 }
-
-/* Newsletter input field - full width with rounded corners */
 
 .footer-line {
-    margin: 50px 0 25px;
-    border: none;
-    border-top: 1px solid #555
+  margin: 50px 0 25px;
+  border: none;
+  border-top: 1px solid #555;
 }
-
-/* Horizontal divider line between footer sections */
 
 .footer-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  text-align: center;
 }
-
-/* Footer bottom section with spaced-out layout */
-/* Flex wrap for responsive behavior */
 
 .footer-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
-
-/* Left footer section with logo and text */
 
 .footer-left img {
-    width: 50px;
+  width: 50px;
 }
-
-/* Footer logo size */
 
 .footer-left p {
-    font-size: 0.9rem;
-    color: #ccc
+  font-size: 0.9rem;
+  color: #ccc;
 }
-
-/* Footer text styling */
 
 .footer-left span {
   font-size: 0.8rem;
   color: #aaa;
 }
-
-/* Smaller, lighter text for copyright */
 
 .footer-center a {
   color: #ccc;
@@ -297,13 +240,9 @@ body {
   text-decoration: none;
 }
 
-/* Center footer links */
-
 .footer-center a:hover {
   color: #fff;
 }
-
-/* White color on hover */
 
 .footer-right a img {
   width: 30px;
@@ -312,54 +251,232 @@ body {
   transition: 0.3s;
 }
 
-/* Footer social icons with reduced brightness */
-
 .footer-right a img:hover {
   filter: brightness(1);
 }
 
 .modal-section {
-    display: flex;
-    padding: 100px;
-    justify-content: center;
-    align-items: center;
-    background: #f0f0f0;
+  display: flex;
+  padding: 100px;
+  justify-content: center;
+  align-items: center;
+  background: #f0f0f0;
+  min-height: 60vh;
 }
 
 .modal-container {
-    background: white;
-    border-radius: 20px;
-    padding: 60px 80px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-    text-align: center;
-    max-width: 600px;
-    width: 100%;
+  background: white;
+  border-radius: 20px;
+  padding: 60px 80px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  max-width: 600px;
+  width: 100%;
 }
 
 .success-message {
-    background: black;
-    color: white;
-    padding: 25px 60px;
-    border-radius: 12px;
-    font-size: 22px;
-    font-weight: 400;
-    margin-bottom: 50px;
-    letter-spacing: 0.3px;
+  background: black;
+  color: white;
+  padding: 25px 60px;
+  border-radius: 12px;
+  font-size: 22px;
+  font-weight: 400;
+  margin-bottom: 50px;
+  letter-spacing: 0.3px;
 }
 
 .done-button {
-    background: white;
-    color: black;
-    border: 2px solid black;
-    padding: 15px 70px;
-    border-radius: 10px;
-    font-size: 20px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  background: white;
+  color: black;
+  border: 2px solid black;
+  padding: 15px 70px;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .done-button:hover {
-    background: black;
+  background: black;
+  color: white;
+}
+
+@media screen and (max-width: 1024px) {
+  .navbar {
+    top: 0;
+    padding: 15px 20px;
+  }
+
+  .burger-menu {
+    display: flex;
+  }
+
+  .nav-container {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 300px;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.95);
+    transition: right 0.3s ease;
+    z-index: 999;
+  }
+
+  .nav-container.active {
+    right: 0;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    background-color: transparent;
+    margin-top: 80px;
+    padding: 20px;
+    height: auto;
+  }
+
+  .nav-links li {
+    margin: 10px 0;
+    margin-left: 0;
+  }
+
+  .nav-links li:first-child {
+    margin-left: 0;
+  }
+
+  .nav-links a {
     color: white;
+    display: block;
+    padding: 15px;
+    text-align: left;
+  }
+
+  .nav-links #links.active {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .social-icons {
+    flex-direction: row;
+    justify-content: center;
+    margin: 20px 0;
+  }
+
+  .modal-section {
+    padding: 60px 20px;
+  }
+
+  .modal-container {
+    padding: 50px 60px;
+  }
+
+  .success-message {
+    font-size: 20px;
+    padding: 20px 40px;
+    margin-bottom: 40px;
+  }
+
+  .done-button {
+    padding: 12px 60px;
+    font-size: 18px;
+  }
+
+  .footer-columns {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .name {
+    font-size: 1.5rem;
+  }
+
+  .title {
+    font-size: 0.85rem;
+  }
+
+  .modal-section {
+    padding: 40px 15px;
+    min-height: 50vh;
+  }
+
+  .modal-container {
+    padding: 40px 30px;
+    border-radius: 15px;
+  }
+
+  .success-message {
+    font-size: 18px;
+    padding: 18px 30px;
+    margin-bottom: 35px;
+    border-radius: 10px;
+  }
+
+  .done-button {
+    padding: 12px 50px;
+    font-size: 16px;
+    border-radius: 8px;
+  }
+
+  .footer {
+    padding: 40px 5%;
+  }
+
+  .footer-columns {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .name {
+    font-size: 1.2rem;
+  }
+
+  .title {
+    font-size: 0.7rem;
+  }
+
+  .burger-menu span {
+    width: 25px;
+  }
+
+  .modal-section {
+    padding: 30px 10px;
+    min-height: 40vh;
+  }
+
+  .modal-container {
+    padding: 30px 20px;
+    border-radius: 12px;
+    max-width: 95%;
+  }
+
+  .success-message {
+    font-size: 16px;
+    padding: 15px 20px;
+    margin-bottom: 30px;
+    border-radius: 8px;
+  }
+
+  .done-button {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 16px;
+  }
+
+  .footer-left {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-center a {
+    display: block;
+    margin: 5px 0;
+  }
 }
