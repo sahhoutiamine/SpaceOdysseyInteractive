@@ -78,5 +78,37 @@
     "launchDate": "2020-07-30",
     "image": "images/perseverance-rover.jpg",
     "description": "The Perseverance rover is exploring Mars to search for ancient life and collect rock samples. It carried the Ingenuity helicopter — the first aircraft to fly on another planet — marking a new era of aerial exploration on Mars."
+  },
+  {
+    "id": 11,
+    "name": "Artemis I",
+    "agency": "NASA",
+    "launchDate": "2022-11-16",
+    "image": "images/artemis1.jpg",
+    "description": "Artemis I was the first integrated test of NASA’s Space Launch System and the Orion spacecraft. The uncrewed mission orbited the Moon and returned to Earth, paving the way for future crewed lunar missions."
+  },
+  {
+    "id": 12,
+    "name": "Rosetta & Philae",
+    "agency": "ESA",
+    "launchDate": "2004-03-02",
+    "image": "images/rosetta-philae.jpg",
+    "description": "Rosetta was the first mission to orbit a comet, while its lander Philae made the first-ever landing on a comet’s surface. The mission provided key insights into the origins of comets and the early solar system."
+  },
+  {
+    "id": 13,
+    "name": "Juno",
+    "agency": "NASA",
+    "launchDate": "2011-08-05",
+    "image": "images/juno.jpg",
+    "description": "The Juno spacecraft is studying Jupiter’s atmosphere, magnetic field, and interior. Its discoveries about the planet’s storms and composition have reshaped our understanding of gas giants."
+  },
+  {
+    "id": 14,
+    "name": "Tiangong Space Station",
+    "agency": "CNSA (China)",
+    "launchDate": "2021-04-29",
+    "image": "images/tiangong.jpg",
+    "description": "Tiangong is China’s modular space station in low Earth orbit. It serves as a permanent platform for scientific experiments and international collaboration in space research."
   }
 ]

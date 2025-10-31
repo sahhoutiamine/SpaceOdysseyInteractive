@@ -73,8 +73,54 @@ if (slides.length > 0 && dots.length > 0 && prev && next) {
 }
 
 // =========================
-// Fetching Missions
+// Fetching and Filtering Missions
 // =========================
+
+let missionsData = [];
+
+const container = document.getElementById("missionsContainer");
+const agencyFilter = document.getElementById("agencyFilter");
+const yearFilter = document.getElementById("yearFilter");
+const typeFilter = document.getElementById("typeFilter");
+const searchInput = document.getElementById("searchInput");
+
+function displayMissions(missions) {
+  container.innerHTML = "";
+  missions.forEach((mission) => {
+    const section = document.createElement("section");
+    section.classList.add("missions-card");
+
+    section.innerHTML = `
+      <div class="card-background" style="background: url('${mission.image}') no-repeat center center/cover;"></div>
+      <div class="content-card">
+        <h2>${mission.name}</h2>
+        <p>${mission.description}</p>
+        <button class="learn-btn">Learn More</button>
+      </div>
+    `;
+
+    container.appendChild(section);
+  });
+}
+
+function filterMissions() {
+  const agencyVal = agencyFilter.value;
+  const yearVal = yearFilter.value;
+  const typeVal = typeFilter.value.toLowerCase();
+  const searchVal = searchInput.value.toLowerCase();
+
+  const filtered = missionsData.filter((mission) => {
+    const matchAgency = agencyVal === "" || mission.agency === agencyVal;
+    const matchYear = yearVal === "" || mission.launchDate.startsWith(yearVal);
+    const matchType =
+      typeVal === "" ||
+      (mission.type && mission.type.toLowerCase() === typeVal);
+    const matchSearch = mission.name.toLowerCase().includes(searchVal);
+    return matchAgency && matchYear && matchType && matchSearch;
+  });
+
+  displayMissions(filtered);
+}
 
 fetch("missions.json")
   .then((response) => {
@@ -84,25 +130,28 @@ fetch("missions.json")
     return response.json();
   })
   .then((missions) => {
-    let container = document.getElementById("missionsContainer");
-    missions.forEach((mission) => {
-      const section = document.createElement("section");
-      section.classList.add("missions-card");
-      section.innerHTML = `
-              <div class="card-background"
-                style="background: url('${mission.image}') no-repeat center center/cover;">
-              </div>
-              <div class="content-card">
-                <h2>${mission.name}</h2>
-                <p>${mission.description}</p>
-                <button class="learn-btn">Learn More</button>
-              </div>
-            `;
+    missionsData = missions;
 
-      container.appendChild(section);
+    missionsData.forEach((m) => {
+      if (m.name.toLowerCase().includes("rover")) m.type = "Rover";
+      else if (m.name.toLowerCase().includes("telescope")) m.type = "Telescope";
+      else if (m.name.toLowerCase().includes("falcon")) m.type = "Rocket";
+      else if (
+        m.name.toLowerCase().includes("moon") ||
+        m.name.toLowerCase().includes("lunar") ||
+        m.name.toLowerCase().includes("apollo")
+      )
+        m.type = "Lunar Mission";
+      else m.type = "Probe";
     });
+
+    displayMissions(missionsData);
   })
   .catch((error) => console.error("Error loading missions:", error));
+
+[agencyFilter, yearFilter, typeFilter, searchInput].forEach((el) =>
+  el.addEventListener("input", filterMissions)
+);
 
 // // ===============================
 // // Projet : Missions Spatiales Interactives

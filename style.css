@@ -12,11 +12,10 @@ body {
 
 .navbar {
   background: url(images/stars-space-darkness.jpg) no-repeat center center/cover;
-  padding: 20px;
   min-height: 132px;
   display: flex;
   position: sticky;
-  top: -88px;
+  top: -85px;
   flex-direction: column;
   border-bottom: 1px solid rgba(100, 120, 255, 0.2);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -27,6 +26,7 @@ body {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+  padding: 10px;
 }
 
 .logo-text {
@@ -101,14 +101,10 @@ body {
   letter-spacing: 0.5px;
   transition: all 0.3s ease;
   position: relative;
+  top: 30%;
   padding: 0.5rem 1rem;
   flex: 1;
   text-align: center;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
 }
 
 .nav-links a:hover {
@@ -184,7 +180,7 @@ a {
 }
 
 .footer-col ul li {
-  margin: 8px 0
+  margin: 8px 0;
 }
 
 .footer-col ul li a {
@@ -208,7 +204,7 @@ a {
 .footer-line {
   margin: 50px 0 25px;
   border: none;
-  border-top: 1px solid #555
+  border-top: 1px solid #555;
 }
 
 .footer-bottom {
@@ -231,7 +227,7 @@ a {
 
 .footer-left p {
   font-size: 0.9rem;
-  color: #ccc
+  color: #ccc;
 }
 
 .footer-left span {
@@ -306,6 +302,10 @@ a {
   margin-bottom: 40px;
   color: #e0e0e0;
 }
+a {
+  text-decoration: none;
+  color: white;
+}
 
 .explore-btn {
   background: rgba(255, 255, 255, 0.15);
@@ -329,7 +329,7 @@ a {
   padding: 100px 10%;
   background-color: #fff;
   color: #111;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 .cards {
@@ -434,7 +434,7 @@ a {
 }
 
 .time-counter::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -496,7 +496,7 @@ a {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('images/asteroid.png') no-repeat center center/cover;
+  background: url("images/asteroid.png") no-repeat center center/cover;
   z-index: 1;
 }
 
@@ -810,7 +810,7 @@ a {
   padding: 80px 10%;
   background-color: #fff;
   color: #111;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 .community-section .container {
@@ -828,7 +828,7 @@ a {
 }
 
 .community-section .section-title::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -10px;
   left: 50%;
@@ -891,7 +891,7 @@ a {
   padding: 80px 10%;
   background-color: #fff;
   color: #111;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 .grow-section .container {
@@ -909,7 +909,7 @@ a {
 }
 
 .main-title::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -15px;
   left: 50%;
@@ -950,7 +950,7 @@ a {
 }
 
 .feature-title::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -8px;
   left: 50%;
@@ -990,7 +990,7 @@ a {
 }
 
 .publishings-title::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -5px;
   left: 0;

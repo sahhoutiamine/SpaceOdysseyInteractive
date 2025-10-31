@@ -12,7 +12,6 @@ body {
 
 .navbar {
   background: url(images/stars-space-darkness.jpg) no-repeat center center/cover;
-  padding: 20px;
   min-height: 132px;
   display: flex;
   position: sticky;
@@ -27,6 +26,7 @@ body {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+  padding: 10px;
 }
 
 .logo-text {
@@ -101,6 +101,7 @@ body {
   letter-spacing: 0.5px;
   transition: all 0.3s ease;
   position: relative;
+  top: 30%;
   padding: 0.5rem 1rem;
   flex: 1;
   text-align: center;
@@ -153,80 +154,80 @@ body {
 }
 
 .footer {
-    background: url(images/stars-space-darkness.jpg) no-repeat center center/cover;
-    padding: 60px 10%;
+  background: url(images/stars-space-darkness.jpg) no-repeat center center/cover;
+  padding: 60px 10%;
 }
 
 .footer-content {
-    max-width: 1200px;
-    margin: 0 auto;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.footer-columns{
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 50px;
+.footer-columns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 50px;
 }
 
 .footer-col h3 {
-    font-size: 1.1rem;
-    margin-bottom: 15px;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
 }
 
 .footer-col ul {
-    list-style: none;
-    padding: 0;
+  list-style: none;
+  padding: 0;
 }
 
 .footer-col ul li {
-    margin: 8px 0
+  margin: 8px 0;
 }
 
 .footer-col ul li a {
-    color: #ccc;
-    text-decoration: none;
-    transition: 0.3s;
+  color: #ccc;
+  text-decoration: none;
+  transition: 0.3s;
 }
 
 .footer-col ul li a:hover {
-    color: #fff;
+  color: #fff;
 }
 
 .footer-subscribe input {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 6px;
-    font-size: 0.9rem;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
 }
 
 .footer-line {
-    margin: 50px 0 25px;
-    border: none;
-    border-top: 1px solid #555
+  margin: 50px 0 25px;
+  border: none;
+  border-top: 1px solid #555;
 }
 
 .footer-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  text-align: center;
 }
 
 .footer-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .footer-left img {
-    width: 50px;
+  width: 50px;
 }
 
 .footer-left p {
-    font-size: 0.9rem;
-    color: #ccc
+  font-size: 0.9rem;
+  color: #ccc;
 }
 
 .footer-left span {
@@ -256,192 +257,192 @@ body {
 }
 
 .space-section {
-    width: 100%;
-    max-width: 1200px;
-    height: 800px;
-    background: url(images/stars-space-darkness.jpg) no-repeat center center/cover;
-    position: relative;
-    left: 120px;
-    overflow: hidden;
-    margin: 40px;
-    border-radius: 20px;
+  width: 100%;
+  max-width: 1200px;
+  height: 800px;
+  background: url(images/stars-space-darkness.jpg) no-repeat center center/cover;
+  position: relative;
+  left: 120px;
+  overflow: hidden;
+  margin: 40px;
+  border-radius: 20px;
 }
 
 .content-card {
-    position: absolute;
-    top: 50%;
-    right: 60px;
-    transform: translateY(-50%);
-    width: 450px;
-    height: 675px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 50%;
+  right: 60px;
+  transform: translateY(-50%);
+  width: 450px;
+  height: 675px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .section-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-top: 180px;
-    margin-bottom: 10px;
-    color: #fff;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 180px;
+  margin-bottom: 10px;
+  color: #fff;
 }
 
 .tagline {
-    font-size: 1.2rem;
-    font-weight: 300;
-    margin-bottom: 50px;
-    color: #c7c7c7;
+  font-size: 1.2rem;
+  font-weight: 300;
+  margin-bottom: 50px;
+  color: #c7c7c7;
 }
 
 .content {
-    font-size: 1rem;
-    line-height: 1.2;
-    margin-bottom: 30px;
-    color: #e8e8e8;
+  font-size: 1rem;
+  line-height: 1.2;
+  margin-bottom: 30px;
+  color: #e8e8e8;
 }
 
 .cta-button {
-    position: absolute;
-    bottom: 30px;
-    right: 30px;
-    padding: 12px 30px;
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    cursor: pointer;
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  padding: 12px 30px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
 }
 
 .cta-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px #ffffff60;
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px #ffffff60;
 }
 
 .astronaut-image {
-    position: absolute;
-    bottom: 150px;
-    left: 280px;
-    transform: rotate(20deg);
-    width: 600px;
-    height: 600px;
-    z-index: 10;
-    animation: float 20s ease-in-out infinite;
+  position: absolute;
+  bottom: 150px;
+  left: 280px;
+  transform: rotate(20deg);
+  width: 600px;
+  height: 600px;
+  z-index: 10;
+  animation: float 20s ease-in-out infinite;
 }
 
 .astronaut2-image {
-    position: absolute;
-    top: 582px;
-    left: 50px;
-    transform: rotate(10deg);
-    width: 480px;
-    height: 480px;
-    z-index: 100;
-    animation: float 20s ease-in-out infinite;
+  position: absolute;
+  top: 582px;
+  left: 50px;
+  transform: rotate(10deg);
+  width: 480px;
+  height: 480px;
+  z-index: 100;
+  animation: float 20s ease-in-out infinite;
 }
 
 .space-title {
-    position: absolute;
-    top: 400px;
-    left: 80px;
-    font-size: 4rem;
-    font-weight: 700;
-    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-    margin-bottom: 20px;
-    z-index: 5;
+  position: absolute;
+  top: 400px;
+  left: 80px;
+  font-size: 4rem;
+  font-weight: 700;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  margin-bottom: 20px;
+  z-index: 5;
 }
 
 .new-section {
-    width: 100%;
-    height: 280px;
-    background: url('images/Community.png') no-repeat center center/cover;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start; 
-    margin: 40px 0;
-    overflow: hidden;
-    padding: 0 80px; 
+  width: 100%;
+  height: 280px;
+  background: url("images/Community.png") no-repeat center center/cover;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 40px 0;
+  overflow: hidden;
+  padding: 0 80px;
 }
 
 .section-content {
-    display: flex; 
-    align-items: flex-start; 
-    justify-content: space-between;
-    width: 100%;
-    max-width: 1200px;
-    margin-top: 30px;
-    color: white;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 30px;
+  color: white;
 }
 
 .text-block {
-    flex: 1;
-    max-width: 600px;
+  flex: 1;
+  max-width: 600px;
 }
 
 .text-block h2 {
-    font-size: 2.2rem;
-    font-weight: 500;
-    margin-bottom: 15px;
-    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  font-size: 2.2rem;
+  font-weight: 500;
+  margin-bottom: 15px;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
 }
 
 .text-block p {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: #e8e8e8;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #e8e8e8;
 }
 
 .stats-container {
-    flex: 1;
-    display: flex;
-    justify-content: flex-start;
-    margin-left: 350px;
-    gap: 250px; 
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 350px;
+  gap: 250px;
 }
 
 .stat-column {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .stat-item {
-    text-align: left;
+  text-align: left;
 }
 
 .stat-number {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 5px;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 5px;
 }
 
 .stat-label {
-    font-size: 0.9rem;
-    color: #c7c7c7;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+  font-size: 0.9rem;
+  color: #c7c7c7;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 @keyframes float {
-    0% {
-        transform: translateY(-4%) translateX(0);
-        rotate: 0deg;
-    }
-    50% {
-        transform: translateY(-6%) translateX(10px);
-        rotate: 5deg;
-    }
-    100% {
-        transform: translateY(-4%) translateX(0);
-        rotate: 0deg;
-    }
+  0% {
+    transform: translateY(-4%) translateX(0);
+    rotate: 0deg;
+  }
+  50% {
+    transform: translateY(-6%) translateX(10px);
+    rotate: 5deg;
+  }
+  100% {
+    transform: translateY(-4%) translateX(0);
+    rotate: 0deg;
+  }
 }
 
 @media screen and (max-width: 1024px) {
@@ -511,7 +512,6 @@ body {
     margin-left: auto;
     margin-right: auto;
     height: 600px;
-
   }
 
   .content-card {
@@ -585,7 +585,6 @@ body {
   .content-card {
     padding: 15px;
     border-radius: 0;
-
   }
 
   .section-title {
@@ -608,7 +607,7 @@ body {
   }
 
   .astronaut2-image {
-   visibility: hidden;
+    visibility: hidden;
   }
 
   .space-title {

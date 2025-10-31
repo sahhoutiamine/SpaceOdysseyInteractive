@@ -13,6 +13,11 @@
           <div class="name">CHARLS OSTMAN</div>
           <div class="title">Historian of the Future</div>
         </div>
+
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Search..." />
+        </div>
+
         <div class="burger-menu" id="burgerMenu">
           <span></span>
           <span></span>
@@ -37,6 +42,50 @@
         </ul>
       </div>
     </nav>
+
+    <section class="missions-filters">
+      <div class="filter-group">
+        <label for="agencyFilter">Agency:</label>
+        <select id="agencyFilter">
+          <option value="">All</option>
+          <option value="NASA">NASA</option>
+          <option value="ESA">ESA</option>
+          <option value="CNSA (China)">CNSA (China)</option>
+          <option value="SpaceX">SpaceX</option>
+          <option value="NASA/ESA/CSA">NASA/ESA/CSA</option>
+          <option value="NASA/ESA/ASI">NASA/ESA/ASI</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="yearFilter">Launch Year:</label>
+        <select id="yearFilter">
+          <option value="">All</option>
+          <option value="1969">1969</option>
+          <option value="1977">1977</option>
+          <option value="1990">1990</option>
+          <option value="1997">1997</option>
+          <option value="2010">2010</option>
+          <option value="2011">2011</option>
+          <option value="2018">2018</option>
+          <option value="2020">2020</option>
+          <option value="2021">2021</option>
+          <option value="2022">2022</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="typeFilter">Type:</label>
+        <select id="typeFilter">
+          <option value="">All</option>
+          <option value="Rover">Rover</option>
+          <option value="Telescope">Telescope</option>
+          <option value="Lunar Mission">Lunar Mission</option>
+          <option value="Probe">Probe</option>
+          <option value="Rocket">Rocket</option>
+        </select>
+      </div>
+    </section>
 
     <main id="missionsContainer" class="missions-container"></main>
 
