@@ -174,9 +174,6 @@ function showAddMissionModal() {
     // Add to missionsData array
     missionsData.push(newMission);
 
-    // Save to backend (you'll need to implement this)
-    saveMissionToBackend(newMission);
-
     // Refresh display
     filterMissions();
 
@@ -575,49 +572,125 @@ function showNotification(message, type) {
 
   const notification = document.createElement("div");
   notification.className = `notification ${type}`;
-  notification.textContent = message;
+
+  // Create notification content with icon
+  const icon = getNotificationIcon(type);
+  notification.innerHTML = `
+    <div class="notification-content">
+      <span class="notification-icon">${icon}</span>
+      <span class="notification-message">${message}</span>
+    </div>
+  `;
 
   notification.style.cssText = `
     position: fixed;
     top: 20px;
-    right: 20px;
-    padding: 12px 20px;
-    border-radius: 4px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    padding: 16px 24px;
+    border-radius: 12px;
     color: white;
-    font-weight: bold;
+    font-weight: 600;
     z-index: 10000;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     opacity: 0;
-    transform: translateY(-20px);
+    max-width: 90vw;
+    width: auto;
+    min-width: 280px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
   `;
 
+  // Set colors based on type with modern gradient backgrounds
   if (type === "success") {
-    notification.style.background = "#27ae60";
+    notification.style.background = "linear-gradient(135deg, #10b981, #059669)";
   } else if (type === "error") {
-    notification.style.background = "#e74c3c";
+    notification.style.background = "linear-gradient(135deg, #ef4444, #dc2626)";
+  } else if (type === "warning") {
+    notification.style.background = "linear-gradient(135deg, #f59e0b, #d97706)";
   } else {
-    notification.style.background = "#3498db";
+    notification.style.background = "linear-gradient(135deg, #3b82f6, #2563eb)";
   }
 
   document.body.appendChild(notification);
 
+  // Force reflow
   notification.offsetHeight;
 
+  // Animate in
   setTimeout(() => {
     notification.style.opacity = "1";
-    notification.style.transform = "translateY(0)";
+    notification.style.transform = "translateX(-50%) translateY(0)";
   }, 10);
 
+  // Auto remove after delay
   setTimeout(() => {
     notification.style.opacity = "0";
-    notification.style.transform = "translateY(-20px)";
+    notification.style.transform = "translateX(-50%) translateY(-20px)";
     setTimeout(() => {
       if (notification.parentNode) {
         document.body.removeChild(notification);
       }
-    }, 300);
-  }, 3000);
+    }, 400);
+  }, 4000);
 }
+
+// Helper function to get appropriate icons
+function getNotificationIcon(type) {
+  const icons = {
+    success: "✓",
+    error: "✕",
+    warning: "⚠",
+    info: "ℹ",
+  };
+  return icons[type] || icons.info;
+}
+
+// Optional: Add CSS for better mobile appearance
+const style = document.createElement("style");
+style.textContent = `
+  .notification-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .notification-icon {
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+  }
+  
+  @media (max-width: 480px) {
+    .notification {
+      top: 16px !important;
+      padding: 14px 20px !important;
+      min-width: 260px !important;
+      max-width: 85vw !important;
+      font-size: 15px !important;
+    }
+  }
+  
+  @media (max-width: 360px) {
+    .notification {
+      padding: 12px 16px !important;
+      min-width: 240px !important;
+    }
+    
+    .notification-content {
+      gap: 10px;
+    }
+  }
+`;
+document.head.appendChild(style);
 
 // =========================
 // Fetching and Filtering Missions
