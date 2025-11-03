@@ -72,13 +72,142 @@ if (slides.length > 0 && dots.length > 0 && prev && next) {
 }
 
 // =========================
+// Add Mission Button Setup
+// =========================
+function setupAddMissionButton() {
+  const filtersSection = document.querySelector(".missions-filters");
+  if (!filtersSection) return;
+
+  // Create add button container
+  const addButtonContainer = document.createElement("div");
+  addButtonContainer.className = "add-mission-container";
+  addButtonContainer.innerHTML = `
+    <button id="addMissionBtn" class="add-mission-btn" title="Add New Mission">
+      <span>Add Mission</span>
+    </button>
+  `;
+
+  filtersSection.appendChild(addButtonContainer);
+
+  // Add event listener
+  document
+    .getElementById("addMissionBtn")
+    .addEventListener("click", showAddMissionModal);
+}
+
+// Call setup after DOM is loaded
+document.addEventListener("DOMContentLoaded", setupAddMissionButton);
+
+// =========================
+// Add Mission Modal
+// =========================
+function showAddMissionModal() {
+  const modal = document.createElement("div");
+  modal.className = "edit-modal";
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h2>Add New Mission</h2>
+      <form id="addMissionForm">
+        <label for="addName">Mission Name: *</label>
+        <input type="text" id="addName" placeholder="Enter mission name" required>
+        
+        <label for="addAgency">Agency: *</label>
+        <select id="addAgency" required>
+          <option value="">Select Agency</option>
+          <option value="NASA">NASA</option>
+          <option value="ESA">ESA</option>
+          <option value="CNSA (China)">CNSA (China)</option>
+          <option value="SpaceX">SpaceX</option>
+          <option value="NASA/ESA/CSA">NASA/ESA/CSA</option>
+          <option value="NASA/ESA/ASI">NASA/ESA/ASI</option>
+        </select>
+
+        <label for="addLaunchDate">Launch Date: *</label>
+        <input type="date" id="addLaunchDate" required>
+        
+        <label for="addType">Type: *</label>
+        <select id="addType" required>
+          <option value="">Select Type</option>
+          <option value="Rover">Rover</option>
+          <option value="Telescope">Telescope</option>
+          <option value="Lunar Mission">Lunar Mission</option>
+          <option value="Probe">Probe</option>
+          <option value="Rocket">Rocket</option>
+        </select>
+
+        <label for="addImage">Image URL: *</label>
+        <input type="url" id="addImage" placeholder="https://example.com/image.jpg" required>
+        
+        <label for="addDesc">Description: *</label>
+        <textarea id="addDesc" rows="4" placeholder="Enter mission description" required></textarea>
+        
+        <div class="modal-buttons">
+          <button type="submit" class="save-btn">Add Mission</button>
+          <button type="button" class="cancel-btn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Set min and max dates for the date input (optional)
+  const dateInput = modal.querySelector("#addLaunchDate");
+  const currentYear = new Date().getFullYear();
+  dateInput.min = "1957-01-01"; // First satellite launch
+  dateInput.max = `${currentYear + 10}-12-31`; // 10 years from now
+
+  // Handle form submission
+  const addForm = modal.querySelector("#addMissionForm");
+  addForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const newMission = {
+      name: document.getElementById("addName").value.trim(),
+      agency: document.getElementById("addAgency").value,
+      launchDate: document.getElementById("addLaunchDate").value, // This will be in "YYYY-MM-DD" format
+      type: document.getElementById("addType").value,
+      image: document.getElementById("addImage").value.trim(),
+      description: document.getElementById("addDesc").value.trim(),
+    };
+
+    // Add to missionsData array
+    missionsData.push(newMission);
+
+    // Save to backend (you'll need to implement this)
+    saveMissionToBackend(newMission);
+
+    // Refresh display
+    filterMissions();
+
+    // Close modal
+    document.body.removeChild(modal);
+    showNotification("Mission added successfully!", "success");
+  });
+
+  // Handle cancel button
+  modal.querySelector(".cancel-btn").addEventListener("click", function () {
+    document.body.removeChild(modal);
+  });
+
+  // Close modal when clicking outside
+  modal.addEventListener("click", function (e) {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+    }
+  });
+
+  // Focus on first input
+  setTimeout(() => {
+    const nameInput = modal.querySelector("#addName");
+    if (nameInput) nameInput.focus();
+  }, 100);
+}
+// =========================
 // Context Menu for Missions
 // =========================
 let currentMissionCard = null;
-let pressTimer;
-let longPressActive = false;
 
-// Create context menu element
 function createContextMenu() {
   let contextMenu = document.getElementById("missionContextMenu");
   if (!contextMenu) {
@@ -93,16 +222,12 @@ function createContextMenu() {
       </ul>
     `;
     document.body.appendChild(contextMenu);
-
-    // Setup event listeners immediately after creating the menu
     setupContextMenuListeners(contextMenu);
   }
   return contextMenu;
 }
 
-// Setup context menu event listeners
 function setupContextMenuListeners(contextMenu) {
-  // Use event delegation on the context menu
   contextMenu.addEventListener("click", (e) => {
     e.stopPropagation();
 
@@ -122,7 +247,6 @@ function setupContextMenuListeners(contextMenu) {
   });
 }
 
-// Show context menu
 function showContextMenu(e, missionCard) {
   e.preventDefault();
   e.stopPropagation();
@@ -130,49 +254,37 @@ function showContextMenu(e, missionCard) {
   const contextMenu = createContextMenu();
   currentMissionCard = missionCard;
 
-  // Make sure it's visible first
   contextMenu.style.display = "block";
-
-  // Use fixed positioning with clientX/clientY
   contextMenu.style.position = "fixed";
 
-  // Get dimensions AFTER display is set to block
   const menuWidth = contextMenu.offsetWidth;
   const menuHeight = contextMenu.offsetHeight;
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
 
-  // Use clientX/clientY for fixed positioning (no scroll offset needed)
   let x = e.clientX;
   let y = e.clientY;
 
-  // Adjust if menu goes off screen (right edge)
   if (x + menuWidth > viewportWidth) {
     x = viewportWidth - menuWidth - 10;
   }
 
-  // Adjust if menu goes off screen (bottom edge)
   if (y + menuHeight > viewportHeight) {
     y = viewportHeight - menuHeight - 10;
   }
 
-  // Apply positioning
   contextMenu.style.left = x + "px";
   contextMenu.style.top = y + "px";
 
-  // Stop scrolling when menu is shown
   document.body.style.overflow = "hidden";
 }
 
-// Hide context menu
 function hideContextMenu() {
   const contextMenu = document.getElementById("missionContextMenu");
   if (contextMenu) {
     contextMenu.style.display = "none";
   }
   currentMissionCard = null;
-
-  // Re-enable scrolling when menu is hidden
   document.body.style.overflow = "";
 }
 
@@ -183,7 +295,6 @@ document.addEventListener("click", () => {
   }
 });
 
-// Edit mission function - FIXED VERSION
 function editMissionHandler() {
   if (!currentMissionCard) {
     console.error("No mission card selected");
@@ -192,25 +303,86 @@ function editMissionHandler() {
 
   const missionName = currentMissionCard.querySelector("h2").textContent;
   const missionDesc = currentMissionCard.querySelector("p").textContent;
-
-  // Store reference to the mission card before hiding context menu
   const missionCardToEdit = currentMissionCard;
 
-  // Create edit modal
+  // Find the mission data from missionsData array
+  const index = Array.from(container.children).indexOf(missionCardToEdit);
+  const missionData = missionsData[index];
+
+  if (!missionData) {
+    console.error("Mission data not found");
+    return;
+  }
+
   const modal = document.createElement("div");
   modal.className = "edit-modal";
   modal.innerHTML = `
     <div class="modal-content">
       <h2>Edit Mission</h2>
       <form id="editForm">
-        <label for="editName">Mission Name:</label>
-        <input type="text" id="editName" value="${missionName.replace(
+        <label for="editName">Mission Name: *</label>
+        <input type="text" id="editName" value="${missionData.name.replace(
           /"/g,
           "&quot;"
-        )}" required>
+        )}" placeholder="Enter mission name" required>
         
-        <label for="editDesc">Description:</label>
-        <textarea id="editDesc" rows="4" required>${missionDesc}</textarea>
+        <label for="editAgency">Agency: *</label>
+        <select id="editAgency" required>
+          <option value="">Select Agency</option>
+          <option value="NASA" ${
+            missionData.agency === "NASA" ? "selected" : ""
+          }>NASA</option>
+          <option value="ESA" ${
+            missionData.agency === "ESA" ? "selected" : ""
+          }>ESA</option>
+          <option value="CNSA (China)" ${
+            missionData.agency === "CNSA (China)" ? "selected" : ""
+          }>CNSA (China)</option>
+          <option value="SpaceX" ${
+            missionData.agency === "SpaceX" ? "selected" : ""
+          }>SpaceX</option>
+          <option value="NASA/ESA/CSA" ${
+            missionData.agency === "NASA/ESA/CSA" ? "selected" : ""
+          }>NASA/ESA/CSA</option>
+          <option value="NASA/ESA/ASI" ${
+            missionData.agency === "NASA/ESA/ASI" ? "selected" : ""
+          }>NASA/ESA/ASI</option>
+        </select>
+
+        <label for="editLaunchDate">Launch Date: *</label>
+        <input type="date" id="editLaunchDate" value="${
+          missionData.launchDate
+        }" required>
+        
+        <label for="editType">Type: *</label>
+        <select id="editType" required>
+          <option value="">Select Type</option>
+          <option value="Rover" ${
+            missionData.type === "Rover" ? "selected" : ""
+          }>Rover</option>
+          <option value="Telescope" ${
+            missionData.type === "Telescope" ? "selected" : ""
+          }>Telescope</option>
+          <option value="Lunar Mission" ${
+            missionData.type === "Lunar Mission" ? "selected" : ""
+          }>Lunar Mission</option>
+          <option value="Probe" ${
+            missionData.type === "Probe" ? "selected" : ""
+          }>Probe</option>
+          <option value="Rocket" ${
+            missionData.type === "Rocket" ? "selected" : ""
+          }>Rocket</option>
+        </select>
+
+        <label for="editImage">Image URL: *</label>
+        <input type="text" id="editImage" value="${
+          missionData.image
+        }" placeholder="https://example.com/image.jpg" required>
+        
+        <label for="editDesc">Description: *</label>
+        <textarea id="editDesc" rows="4" placeholder="Enter mission description" required>${
+          missionData.description
+        }</textarea>
         
         <div class="modal-buttons">
           <button type="submit" class="save-btn">Save Changes</button>
@@ -222,29 +394,75 @@ function editMissionHandler() {
 
   document.body.appendChild(modal);
 
-  // FIXED: Use local variable instead of global currentMissionCard
+  // Set min and max dates for the date input
+  const dateInput = modal.querySelector("#editLaunchDate");
+  const currentYear = new Date().getFullYear();
+  dateInput.min = "1957-01-01";
+  dateInput.max = `${currentYear + 10}-12-31`;
+
+  // Handle form submission
   const editForm = modal.querySelector("#editForm");
   editForm.addEventListener("submit", function (e) {
     e.preventDefault();
-    const newName = document.getElementById("editName").value;
-    const newDesc = document.getElementById("editDesc").value;
 
-    if (newName && newDesc) {
-      // Use the local variable that stores the mission card reference
-      missionCardToEdit.querySelector("h2").textContent = newName;
-      missionCardToEdit.querySelector("p").textContent = newDesc;
+    const updatedMission = {
+      name: document.getElementById("editName").value.trim(),
+      agency: document.getElementById("editAgency").value,
+      launchDate: document.getElementById("editLaunchDate").value,
+      type: document.getElementById("editType").value,
+      image: document.getElementById("editImage").value.trim(),
+      description: document.getElementById("editDesc").value.trim(),
+    };
 
-      // Update in missionsData
-      const index = Array.from(container.children).indexOf(missionCardToEdit);
-      if (missionsData[index]) {
-        missionsData[index].name = newName;
-        missionsData[index].description = newDesc;
-      }
+    // Update mission card display
+    missionCardToEdit.querySelector("h2").textContent = updatedMission.name;
+    missionCardToEdit.querySelector("p").textContent =
+      updatedMission.description;
 
-      document.body.removeChild(modal);
-      hideContextMenu();
-      showNotification("Mission updated successfully!", "success");
+    // Update the image if it exists in the card
+    const missionImage = missionCardToEdit.querySelector("img");
+    if (missionImage) {
+      missionImage.src = updatedMission.image;
+      missionImage.alt = updatedMission.name;
     }
+
+    // Update agency badge if it exists
+    const agencyBadge = missionCardToEdit.querySelector(".agency-badge");
+    if (agencyBadge) {
+      agencyBadge.textContent = updatedMission.agency;
+    }
+
+    // Update type badge if it exists
+    const typeBadge = missionCardToEdit.querySelector(".type-badge");
+    if (typeBadge) {
+      typeBadge.textContent = updatedMission.type;
+    }
+
+    // Update launch date if displayed
+    const launchDateElement = missionCardToEdit.querySelector(".launch-date");
+    if (launchDateElement) {
+      launchDateElement.textContent = `Launched: ${formatLaunchDate(
+        updatedMission.launchDate
+      )}`;
+    }
+
+    // Update missionsData array
+    if (missionsData[index]) {
+      missionsData[index] = { ...missionsData[index], ...updatedMission };
+    }
+
+    // Save to backend (if implemented)
+    if (typeof saveMissionToBackend === "function") {
+      saveMissionToBackend(updatedMission, index);
+    }
+
+    // Refresh display to ensure filters work correctly
+    filterMissions();
+
+    // Close modal
+    document.body.removeChild(modal);
+    hideContextMenu();
+    showNotification("Mission updated successfully!", "success");
   });
 
   // Handle cancel button
@@ -268,7 +486,21 @@ function editMissionHandler() {
   }, 100);
 }
 
-// Delete mission function - FIXED VERSION
+// Helper function to format launch date for display (optional)
+function formatLaunchDate(dateString) {
+  if (!dateString) return "Unknown";
+
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  } catch (e) {
+    return dateString; // Return original if parsing fails
+  }
+}
 function deleteMissionHandler() {
   if (!currentMissionCard) {
     console.error("No mission card selected");
@@ -276,9 +508,8 @@ function deleteMissionHandler() {
   }
 
   const missionName = currentMissionCard.querySelector("h2").textContent;
-  const missionCardToDelete = currentMissionCard; // Store reference
+  const missionCardToDelete = currentMissionCard;
 
-  // Create delete confirmation modal
   const modal = document.createElement("div");
   modal.className = "edit-modal";
   modal.innerHTML = `
@@ -296,17 +527,14 @@ function deleteMissionHandler() {
 
   document.body.appendChild(modal);
 
-  // Handle delete confirmation - FIXED: Use stored reference and proper timing
   modal
     .querySelector(".delete-confirm-btn")
     .addEventListener("click", function () {
       const index = Array.from(container.children).indexOf(missionCardToDelete);
 
-      // Remove modal and hide context menu immediately
       document.body.removeChild(modal);
       hideContextMenu();
 
-      // Remove from DOM with animation
       missionCardToDelete.style.transition = "opacity 0.3s, transform 0.3s";
       missionCardToDelete.style.opacity = "0";
       missionCardToDelete.style.transform = "scale(0.8)";
@@ -315,24 +543,20 @@ function deleteMissionHandler() {
         if (missionCardToDelete && missionCardToDelete.parentNode) {
           missionCardToDelete.remove();
 
-          // Remove from missionsData
           if (index !== -1 && missionsData[index]) {
             missionsData.splice(index, 1);
           }
 
-          // FIXED: Show notification after animation completes
           showNotification("Mission deleted successfully!", "success");
         }
       }, 300);
     });
 
-  // Handle cancel
   modal.querySelector(".cancel-btn").addEventListener("click", function () {
     document.body.removeChild(modal);
     hideContextMenu();
   });
 
-  // Close modal when clicking outside
   modal.addEventListener("click", function (e) {
     if (e.target === modal) {
       document.body.removeChild(modal);
@@ -341,9 +565,7 @@ function deleteMissionHandler() {
   });
 }
 
-// Show notification - ENHANCED VERSION
 function showNotification(message, type) {
-  // Remove any existing notifications first
   const existingNotifications = document.querySelectorAll(".notification");
   existingNotifications.forEach((notification) => {
     if (notification.parentNode) {
@@ -355,7 +577,6 @@ function showNotification(message, type) {
   notification.className = `notification ${type}`;
   notification.textContent = message;
 
-  // Add some basic styling if not already in CSS
   notification.style.cssText = `
     position: fixed;
     top: 20px;
@@ -370,7 +591,6 @@ function showNotification(message, type) {
     transform: translateY(-20px);
   `;
 
-  // Set background color based on type
   if (type === "success") {
     notification.style.background = "#27ae60";
   } else if (type === "error") {
@@ -381,16 +601,13 @@ function showNotification(message, type) {
 
   document.body.appendChild(notification);
 
-  // Force reflow
   notification.offsetHeight;
 
-  // Animate in
   setTimeout(() => {
     notification.style.opacity = "1";
     notification.style.transform = "translateY(0)";
   }, 10);
 
-  // Animate out and remove
   setTimeout(() => {
     notification.style.opacity = "0";
     notification.style.transform = "translateY(-20px)";
@@ -427,13 +644,11 @@ function displayMissions(missions) {
       </div>
     `;
 
-    // Desktop: Right-click context menu
     section.addEventListener("contextmenu", (e) => {
       e.preventDefault();
       showContextMenu(e, section);
     });
 
-    // Mobile: Long-touch context menu
     let touchTimer;
     let touchMoved = false;
 
@@ -451,7 +666,6 @@ function displayMissions(missions) {
           };
           showContextMenu(syntheticEvent, section);
 
-          // Optional: Haptic feedback
           if (navigator.vibrate) {
             navigator.vibrate(50);
           }
