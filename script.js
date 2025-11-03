@@ -72,6 +72,536 @@ if (slides.length > 0 && dots.length > 0 && prev && next) {
 }
 
 // =========================
+// Global Variables
+// =========================
+let missionsData = JSON.parse(localStorage.getItem("missionsData")) || [];
+let favoriteMissions =
+  JSON.parse(localStorage.getItem("favoriteMissions")) || [];
+let currentMissionCard = null;
+const container = document.getElementById("missionsContainer");
+const agencyFilter = document.getElementById("agencyFilter");
+const yearFilter = document.getElementById("yearFilter");
+const typeFilter = document.getElementById("typeFilter");
+const searchInput = document.getElementById("searchInput");
+
+// =========================
+// Favorites Button Setup
+// =========================
+function setupFavoritesButton() {
+  const filtersSection = document.querySelector(".missions-filters");
+  if (!filtersSection) return;
+
+  // Check if add button container exists, if not create it
+  let addButtonContainer = document.querySelector(".add-mission-container");
+  if (!addButtonContainer) {
+    addButtonContainer = document.createElement("div");
+    addButtonContainer.className = "add-mission-container";
+    filtersSection.appendChild(addButtonContainer);
+  }
+
+  // Create favorites button
+  const favButton = document.createElement("button");
+  favButton.id = "favoritesBtn";
+  favButton.className = "favorites-btn";
+  favButton.title = "View Favorites";
+  favButton.innerHTML = `
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+    </svg>
+    <span class="fav-count">${favoriteMissions.length}</span>
+  `;
+
+  // Insert favorites button AFTER add button (to the right)
+  const addButton = document.getElementById("addMissionBtn");
+  if (addButton) {
+    addButton.parentNode.insertBefore(favButton, addButton.nextSibling);
+  } else {
+    addButtonContainer.appendChild(favButton);
+  }
+
+  // Add event listener
+  favButton.addEventListener("click", toggleFavoritesSidebar);
+
+  // Add styles
+  addFavoritesStyles();
+}
+
+// =========================
+// Favorites Sidebar
+// =========================
+function toggleFavoritesSidebar() {
+  let sidebar = document.getElementById("favoritesSidebar");
+
+  if (sidebar) {
+    // Close sidebar
+    sidebar.classList.remove("active");
+    setTimeout(() => {
+      if (sidebar.parentNode) {
+        document.body.removeChild(sidebar);
+      }
+    }, 300);
+  } else {
+    // Open sidebar
+    createFavoritesSidebar();
+  }
+}
+
+function createFavoritesSidebar() {
+  const sidebar = document.createElement("div");
+  sidebar.id = "favoritesSidebar";
+  sidebar.className = "favorites-sidebar";
+
+  sidebar.innerHTML = `
+    <div class="sidebar-header">
+      <h2>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+        Favorite Missions
+      </h2>
+      <button class="close-sidebar" title="Close">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="sidebar-content" id="favoritesContent">
+      ${renderFavorites()}
+    </div>
+  `;
+
+  document.body.appendChild(sidebar);
+
+  // Trigger animation
+  setTimeout(() => {
+    sidebar.classList.add("active");
+  }, 10);
+
+  // Close button handler
+  sidebar.querySelector(".close-sidebar").addEventListener("click", () => {
+    toggleFavoritesSidebar();
+  });
+
+  // Close when clicking overlay
+  sidebar.addEventListener("click", (e) => {
+    if (e.target === sidebar) {
+      toggleFavoritesSidebar();
+    }
+  });
+
+  // ATTACH EVENT LISTENERS IMMEDIATELY after creating sidebar
+  attachFavoriteEventListeners();
+}
+
+function renderFavorites() {
+  if (favoriteMissions.length === 0) {
+    return `
+      <div class="empty-favorites">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+        <p>No favorite missions yet</p>
+        <span>Right-click on a mission to add it to favorites</span>
+      </div>
+    `;
+  }
+
+  return favoriteMissions
+    .map(
+      (mission) => `
+    <div class="favorite-card" data-mission-id="${mission.id}">
+      <div class="favorite-image" style="background-image: url('${
+        mission.image
+      }')"></div>
+      <div class="favorite-info">
+        <h3>${mission.name}</h3>
+        <div class="favorite-meta">
+          <span class="meta-badge">${mission.agency}</span>
+          <span class="meta-badge">${mission.type}</span>
+        </div>
+        <p class="favorite-desc">${mission.description.substring(0, 100)}${
+        mission.description.length > 100 ? "..." : ""
+      }</p>
+      </div>
+      <button class="remove-favorite" data-mission-id="${
+        mission.id
+      }" title="Remove from favorites">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+  `
+    )
+    .join("");
+}
+
+function updateFavoritesSidebar() {
+  const content = document.getElementById("favoritesContent");
+  if (content) {
+    content.innerHTML = renderFavorites();
+    attachFavoriteEventListeners();
+  }
+
+  // Update counter on button
+  const favCount = document.querySelector(".fav-count");
+  if (favCount) {
+    favCount.textContent = favoriteMissions.length;
+  }
+}
+
+function attachFavoriteEventListeners() {
+  const removeButtons = document.querySelectorAll(".remove-favorite");
+  removeButtons.forEach((btn) => {
+    // Remove any existing event listeners to prevent duplicates
+    btn.replaceWith(btn.cloneNode(true));
+  });
+
+  // Re-select the buttons after cloning
+  const freshRemoveButtons = document.querySelectorAll(".remove-favorite");
+  freshRemoveButtons.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const missionId = parseInt(btn.dataset.missionId);
+      removeFromFavorite(missionId);
+    });
+  });
+}
+
+function removeFromFavorite(missionId) {
+  favoriteMissions = favoriteMissions.filter(
+    (mission) => mission.id !== missionId
+  );
+  localStorage.setItem("favoriteMissions", JSON.stringify(favoriteMissions));
+  showNotification("Mission removed from favorites!", "success");
+  updateFavoritesSidebar();
+}
+
+// =========================
+// Favorites Styles
+// =========================
+function addFavoritesStyles() {
+  const style = document.createElement("style");
+  style.id = "favorites-styles";
+  style.textContent = `
+    /* Add Mission Container */
+    .add-mission-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    /* Favorites Button */
+    .favorites-btn {
+      position: relative;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, #ec4899, #ef4444);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+      height: 44px;
+    }
+
+    .favorites-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
+    }
+
+    .favorites-btn:active {
+      transform: translateY(0);
+    }
+
+    .fav-count {
+      background: rgba(255, 255, 255, 0.3);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      min-width: 24px;
+      text-align: center;
+    }
+
+    /* Add Mission Button - ensure same height */
+    .add-mission-btn {
+      height: 44px;
+      padding: 12px 20px;
+    }
+
+    /* Sidebar */
+    .favorites-sidebar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 400px;
+      height: 100vh;
+      background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+      box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .favorites-sidebar.active {
+      transform: translateX(0);
+    }
+
+    .favorites-sidebar::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+
+    .favorites-sidebar.active::before {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Header */
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .sidebar-header h2 {
+      font-size: 24px;
+      color: #fff;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sidebar-header h2 svg {
+      color: #ec4899;
+    }
+
+    .close-sidebar {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #fff;
+    }
+
+    .close-sidebar:hover {
+      background: rgba(239, 68, 68, 0.2);
+      transform: rotate(90deg);
+    }
+
+    /* Content */
+    .sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .sidebar-content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .sidebar-content::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .sidebar-content::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
+
+    .sidebar-content::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Empty State */
+    .empty-favorites {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.6);
+      padding: 40px;
+    }
+
+    .empty-favorites svg {
+      margin-bottom: 20px;
+      opacity: 0.3;
+    }
+
+    .empty-favorites p {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .empty-favorites span {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Favorite Card */
+    .favorite-card {
+      position: relative;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .favorite-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      border-color: rgba(236, 72, 153, 0.5);
+    }
+
+    .favorite-image {
+      width: 100%;
+      height: 120px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .favorite-image::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60%;
+      background: linear-gradient(to top, rgba(26, 26, 46, 0.9), transparent);
+    }
+
+    .favorite-info {
+      padding: 16px;
+    }
+
+    .favorite-info h3 {
+      margin: 0 0 12px 0;
+      font-size: 18px;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .favorite-meta {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .meta-badge {
+      background: rgba(236, 72, 153, 0.2);
+      color: #ec4899;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid rgba(236, 72, 153, 0.3);
+    }
+
+    .favorite-desc {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .remove-favorite {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(239, 68, 68, 0.9);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: white;
+      z-index: 10;
+    }
+
+    .remove-favorite:hover {
+      background: #ef4444;
+      transform: scale(1.1);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .favorites-sidebar {
+        width: 100%;
+      }
+
+      .favorites-btn {
+        padding: 10px 16px;
+        font-size: 14px;
+      }
+
+      .sidebar-header h2 {
+        font-size: 20px;
+      }
+
+      .favorite-card {
+        margin-bottom: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .favorites-btn span:not(.fav-count) {
+        display: none;
+      }
+
+      .favorites-btn {
+        padding: 10px;
+      }
+    }
+  `;
+
+  if (!document.getElementById("favorites-styles")) {
+    document.head.appendChild(style);
+  }
+}
+
+// =========================
 // Add Mission Button Setup
 // =========================
 function setupAddMissionButton() {
@@ -94,9 +624,6 @@ function setupAddMissionButton() {
     .getElementById("addMissionBtn")
     .addEventListener("click", showAddMissionModal);
 }
-
-// Call setup after DOM is loaded
-document.addEventListener("DOMContentLoaded", setupAddMissionButton);
 
 // =========================
 // Add Mission Modal
@@ -165,7 +692,7 @@ function showAddMissionModal() {
     const newMission = {
       name: document.getElementById("addName").value.trim(),
       agency: document.getElementById("addAgency").value,
-      launchDate: document.getElementById("addLaunchDate").value, // This will be in "YYYY-MM-DD" format
+      launchDate: document.getElementById("addLaunchDate").value,
       type: document.getElementById("addType").value,
       image: document.getElementById("addImage").value.trim(),
       description: document.getElementById("addDesc").value.trim(),
@@ -173,6 +700,9 @@ function showAddMissionModal() {
 
     // Add to missionsData array
     missionsData.push(newMission);
+
+    // Save to localStorage
+    saveMissionsToStorage();
 
     // Refresh display
     filterMissions();
@@ -204,10 +734,6 @@ function showAddMissionModal() {
 // =========================
 // Context Menu for Missions
 // =========================
-let currentMissionCard = null;
-let favoriteMissions =
-  JSON.parse(localStorage.getItem("favoriteMissions")) || [];
-
 function createContextMenu() {
   let contextMenu = document.getElementById("missionContextMenu");
   if (!contextMenu) {
@@ -299,21 +825,9 @@ function addToFavoriteHandler() {
 
   showNotification("Mission added to favorites!", "success");
   hideContextMenu();
+  updateFavoritesSidebar();
 }
 
-// Optional: Function to remove from favorites
-function removeFromFavorite(missionId) {
-  favoriteMissions = favoriteMissions.filter(
-    (mission) => mission.id !== missionId
-  );
-  localStorage.setItem("favoriteMissions", JSON.stringify(favoriteMissions));
-  showNotification("Mission removed from favorites!", "success");
-}
-
-// Optional: Function to check if mission is favorite
-function isMissionFavorite(missionName) {
-  return favoriteMissions.some((mission) => mission.name === missionName);
-}
 function showContextMenu(e, missionCard) {
   e.preventDefault();
   e.stopPropagation();
@@ -518,10 +1032,8 @@ function editMissionHandler() {
       missionsData[index] = { ...missionsData[index], ...updatedMission };
     }
 
-    // Save to backend (if implemented)
-    if (typeof saveMissionToBackend === "function") {
-      saveMissionToBackend(updatedMission, index);
-    }
+    // Save to localStorage
+    saveMissionsToStorage();
 
     // Refresh display to ensure filters work correctly
     filterMissions();
@@ -568,6 +1080,7 @@ function formatLaunchDate(dateString) {
     return dateString; // Return original if parsing fails
   }
 }
+
 function deleteMissionHandler() {
   if (!currentMissionCard) {
     console.error("No mission card selected");
@@ -598,6 +1111,7 @@ function deleteMissionHandler() {
     .querySelector(".delete-confirm-btn")
     .addEventListener("click", function () {
       const index = Array.from(container.children).indexOf(missionCardToDelete);
+      const missionData = missionsData[index];
 
       document.body.removeChild(modal);
       hideContextMenu();
@@ -611,8 +1125,25 @@ function deleteMissionHandler() {
           missionCardToDelete.remove();
 
           if (index !== -1 && missionsData[index]) {
-            missionsData.splice(index, 1);
+            // Remove from missions data
+            const deletedMission = missionsData.splice(index, 1)[0];
+
+            // ALSO REMOVE FROM FAVORITES if it exists there
+            const favoriteIndex = favoriteMissions.findIndex(
+              (fav) => fav.name === deletedMission.name
+            );
+            if (favoriteIndex !== -1) {
+              favoriteMissions.splice(favoriteIndex, 1);
+              localStorage.setItem(
+                "favoriteMissions",
+                JSON.stringify(favoriteMissions)
+              );
+              updateFavoritesSidebar();
+            }
           }
+
+          // Save to localStorage after deletion
+          saveMissionsToStorage();
 
           showNotification("Mission deleted successfully!", "success");
         }
@@ -632,6 +1163,9 @@ function deleteMissionHandler() {
   });
 }
 
+// =========================
+// Notification System
+// =========================
 function showNotification(message, type) {
   const existingNotifications = document.querySelectorAll(".notification");
   existingNotifications.forEach((notification) => {
@@ -720,57 +1254,12 @@ function getNotificationIcon(type) {
   return icons[type] || icons.info;
 }
 
-// Optional: Add CSS for better mobile appearance
-const style = document.createElement("style");
-style.textContent = `
-  .notification-content {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  .notification-icon {
-    font-size: 18px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-  }
-  
-  @media (max-width: 480px) {
-    .notification {
-      top: 16px !important;
-      padding: 14px 20px !important;
-      min-width: 260px !important;
-      max-width: 85vw !important;
-      font-size: 15px !important;
-    }
-  }
-  
-  @media (max-width: 360px) {
-    .notification {
-      padding: 12px 16px !important;
-      min-width: 240px !important;
-    }
-    
-    .notification-content {
-      gap: 10px;
-    }
-  }
-`;
-document.head.appendChild(style);
-
 // =========================
 // Fetching and Filtering Missions
 // =========================
-let missionsData = [];
-const container = document.getElementById("missionsContainer");
-const agencyFilter = document.getElementById("agencyFilter");
-const yearFilter = document.getElementById("yearFilter");
-const typeFilter = document.getElementById("typeFilter");
-const searchInput = document.getElementById("searchInput");
+function saveMissionsToStorage() {
+  localStorage.setItem("missionsData", JSON.stringify(missionsData));
+}
 
 function displayMissions(missions) {
   container.innerHTML = "";
@@ -855,31 +1344,95 @@ function filterMissions() {
   displayMissions(filtered);
 }
 
-fetch("missions.json")
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error("Failed to load missions.json");
-    }
-    return response.json();
-  })
-  .then((missions) => {
-    missionsData = missions;
-    missionsData.forEach((m) => {
-      if (m.name.toLowerCase().includes("rover")) m.type = "Rover";
-      else if (m.name.toLowerCase().includes("telescope")) m.type = "Telescope";
-      else if (m.name.toLowerCase().includes("falcon")) m.type = "Rocket";
-      else if (
-        m.name.toLowerCase().includes("moon") ||
-        m.name.toLowerCase().includes("lunar") ||
-        m.name.toLowerCase().includes("apollo")
-      )
-        m.type = "Lunar Mission";
-      else m.type = "Probe";
-    });
-    displayMissions(missionsData);
-  })
-  .catch((error) => console.error("Error loading missions:", error));
+// Load missions - check localStorage first, then fetch from JSON if empty
+if (missionsData.length === 0) {
+  // Only fetch from missions.json if no data in localStorage
+  fetch("missions.json")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to load missions.json");
+      }
+      return response.json();
+    })
+    .then((missions) => {
+      missionsData = missions;
+      missionsData.forEach((m) => {
+        if (m.name.toLowerCase().includes("rover")) m.type = "Rover";
+        else if (m.name.toLowerCase().includes("telescope"))
+          m.type = "Telescope";
+        else if (m.name.toLowerCase().includes("falcon")) m.type = "Rocket";
+        else if (
+          m.name.toLowerCase().includes("moon") ||
+          m.name.toLowerCase().includes("lunar") ||
+          m.name.toLowerCase().includes("apollo")
+        )
+          m.type = "Lunar Mission";
+        else m.type = "Probe";
+      });
+
+      // Save the fetched data to localStorage for next time
+      saveMissionsToStorage();
+      displayMissions(missionsData);
+    })
+    .catch((error) => console.error("Error loading missions:", error));
+} else {
+  // Data already exists in localStorage, just display it
+  displayMissions(missionsData);
+}
 
 [agencyFilter, yearFilter, typeFilter, searchInput].forEach((el) =>
   el.addEventListener("input", filterMissions)
 );
+
+// =========================
+// Initialize on DOM Load
+// =========================
+document.addEventListener("DOMContentLoaded", () => {
+  setupAddMissionButton();
+  setupFavoritesButton();
+
+  // Update favorites sidebar if it exists
+  updateFavoritesSidebar();
+});
+
+// Optional: Add CSS for better mobile appearance
+const style = document.createElement("style");
+style.textContent = `
+  .notification-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .notification-icon {
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+  }
+  
+  @media (max-width: 480px) {
+    .notification {
+      top: 16px !important;
+      padding: 14px 20px !important;
+      min-width: 260px !important;
+      max-width: 85vw !important;
+      font-size: 15px !important;
+    }
+  }
+  
+  @media (max-width: 360px) {
+    .notification {
+      padding: 12px 16px !important;
+      min-width: 240px !important;
+    }
+    
+    .notification-content {
+      gap: 10px;
+    }
+  }
+`;
+document.head.appendChild(style);
