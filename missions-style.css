@@ -333,6 +333,15 @@ body {
   }
 }
 
+.context-menu .favorite {
+  color: #f39c12;
+  border-left: 3px solid #f39c12;
+}
+
+.context-menu .favorite:hover {
+  background-color: #fef9e7;
+}
+
 .missions-filters {
   display: flex;
   flex-wrap: wrap;

@@ -200,10 +200,13 @@ function showAddMissionModal() {
     if (nameInput) nameInput.focus();
   }, 100);
 }
+
 // =========================
 // Context Menu for Missions
 // =========================
 let currentMissionCard = null;
+let favoriteMissions =
+  JSON.parse(localStorage.getItem("favoriteMissions")) || [];
 
 function createContextMenu() {
   let contextMenu = document.getElementById("missionContextMenu");
@@ -214,6 +217,7 @@ function createContextMenu() {
     contextMenu.innerHTML = `
       <ul>
         <li class="edit" id="editMission">Edit</li>
+        <li class="favorite" id="addToFavorite">Add to Favorite</li>
         <li class="delete" id="deleteMission">Delete</li>
         <li class="cancel" id="cancelMenu">Cancel</li>
       </ul>
@@ -231,6 +235,11 @@ function setupContextMenuListeners(contextMenu) {
     if (e.target.closest("#editMission") || e.target.id === "editMission") {
       editMissionHandler();
     } else if (
+      e.target.closest("#addToFavorite") ||
+      e.target.id === "addToFavorite"
+    ) {
+      addToFavoriteHandler();
+    } else if (
       e.target.closest("#deleteMission") ||
       e.target.id === "deleteMission"
     ) {
@@ -244,6 +253,67 @@ function setupContextMenuListeners(contextMenu) {
   });
 }
 
+function addToFavoriteHandler() {
+  if (!currentMissionCard) {
+    console.error("No mission card selected");
+    return;
+  }
+
+  // Find the mission data from missionsData array
+  const index = Array.from(container.children).indexOf(currentMissionCard);
+  const missionData = missionsData[index];
+
+  if (!missionData) {
+    console.error("Mission data not found");
+    return;
+  }
+
+  // Check if mission is already in favorites
+  const isAlreadyFavorite = favoriteMissions.some(
+    (fav) => fav.name === missionData.name
+  );
+
+  if (isAlreadyFavorite) {
+    showNotification("Mission is already in favorites!", "info");
+    hideContextMenu();
+    return;
+  }
+
+  // Create favorite mission object
+  const favoriteMission = {
+    id: Date.now(), // Generate unique ID
+    name: missionData.name,
+    image: missionData.image,
+    agency: missionData.agency,
+    type: missionData.type,
+    launchDate: missionData.launchDate,
+    description: missionData.description,
+    addedDate: new Date().toISOString(),
+  };
+
+  // Add to favorites array
+  favoriteMissions.push(favoriteMission);
+
+  // Save to localStorage
+  localStorage.setItem("favoriteMissions", JSON.stringify(favoriteMissions));
+
+  showNotification("Mission added to favorites!", "success");
+  hideContextMenu();
+}
+
+// Optional: Function to remove from favorites
+function removeFromFavorite(missionId) {
+  favoriteMissions = favoriteMissions.filter(
+    (mission) => mission.id !== missionId
+  );
+  localStorage.setItem("favoriteMissions", JSON.stringify(favoriteMissions));
+  showNotification("Mission removed from favorites!", "success");
+}
+
+// Optional: Function to check if mission is favorite
+function isMissionFavorite(missionName) {
+  return favoriteMissions.some((mission) => mission.name === missionName);
+}
 function showContextMenu(e, missionCard) {
   e.preventDefault();
   e.stopPropagation();

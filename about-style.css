@@ -147,7 +147,14 @@ body {
   object-fit: contain;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
+*::-webkit-scrollbar {
+  display: none;
+}
 
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 .social-icons img:hover {
   transform: scale(1.2);
   opacity: 0.8;

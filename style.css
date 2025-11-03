@@ -9,7 +9,14 @@ body {
   background-color: #ffffff;
   color: white;
 }
+*::-webkit-scrollbar {
+  display: none;
+}
 
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 .navbar {
   background: url(images/stars-space-darkness.jpg) no-repeat center center/cover;
   min-height: 132px;
