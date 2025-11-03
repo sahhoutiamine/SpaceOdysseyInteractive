@@ -1436,3 +1436,23 @@ style.textContent = `
   }
 `;
 document.head.appendChild(style);
+
+// =========================
+// Reset Missions on Page Load for testing
+// =========================
+function resetMissionsOnLoad() {
+  // Clear localStorage of missions data
+  localStorage.removeItem("missionsData");
+  localStorage.removeItem("favoriteMissions");
+
+  // Clear the global variables
+  missionsData = [];
+  favoriteMissions = [];
+
+  console.log("Missions data reset to default");
+}
+
+// Call this function when the page loads
+window.addEventListener("load", resetMissionsOnLoad);
+// OR call it immediately
+resetMissionsOnLoad();
