@@ -124,31 +124,39 @@ function setupContextMenuListeners(contextMenu) {
 
 // Show context menu
 function showContextMenu(e, missionCard) {
+  e.preventDefault();
+  e.stopPropagation();
+
   const contextMenu = createContextMenu();
   currentMissionCard = missionCard;
 
+  // Make sure it's visible first
   contextMenu.style.display = "block";
 
+  // Use fixed positioning with clientX/clientY
+  contextMenu.style.position = "fixed";
+
+  // Get dimensions AFTER display is set to block
   const menuWidth = contextMenu.offsetWidth;
   const menuHeight = contextMenu.offsetHeight;
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
 
-  let x = e.pageX || e.clientX;
-  let y = e.pageY || e.clientY;
+  // Use clientX/clientY for fixed positioning (no scroll offset needed)
+  let x = e.clientX;
+  let y = e.clientY;
 
-  if (e.pageX === undefined) {
-    x += window.scrollX;
-    y += window.scrollY;
+  // Adjust if menu goes off screen (right edge)
+  if (x + menuWidth > viewportWidth) {
+    x = viewportWidth - menuWidth - 10;
   }
 
-  if (x + menuWidth > viewportWidth + window.scrollX) {
-    x = viewportWidth + window.scrollX - menuWidth - 10;
-  }
-  if (y + menuHeight > viewportHeight + window.scrollY) {
-    y = viewportHeight + window.scrollY - menuHeight - 10;
+  // Adjust if menu goes off screen (bottom edge)
+  if (y + menuHeight > viewportHeight) {
+    y = viewportHeight - menuHeight - 10;
   }
 
+  // Apply positioning
   contextMenu.style.left = x + "px";
   contextMenu.style.top = y + "px";
 }
@@ -161,6 +169,13 @@ function hideContextMenu() {
   }
   currentMissionCard = null;
 }
+
+document.addEventListener("click", () => {
+  const contextMenu = document.getElementById("missionContextMenu");
+  if (contextMenu) {
+    hideContextMenu();
+  }
+});
 
 // Edit mission function - FIXED VERSION
 function editMissionHandler() {
@@ -412,37 +427,43 @@ function displayMissions(missions) {
       showContextMenu(e, section);
     });
 
-    // Mobile: Long press
-    section.addEventListener("touchstart", (e) => {
-      longPressActive = false;
-      pressTimer = setTimeout(() => {
-        longPressActive = true;
-        showContextMenu(e.touches[0], section);
+    // Mobile: Long-touch context menu
+    let touchTimer;
+    let touchMoved = false;
 
-        // Visual feedback
-        const effect = document.createElement("div");
-        effect.className = "long-press-effect";
-        effect.style.left = e.touches[0].pageX + "px";
-        effect.style.top = e.touches[0].pageY + "px";
-        document.body.appendChild(effect);
-        setTimeout(() => {
-          if (effect.parentNode) {
-            document.body.removeChild(effect);
+    section.addEventListener("touchstart", (e) => {
+      touchMoved = false;
+      touchTimer = setTimeout(() => {
+        if (!touchMoved) {
+          e.preventDefault();
+          const touch = e.touches[0];
+          const syntheticEvent = {
+            clientX: touch.clientX,
+            clientY: touch.clientY,
+            preventDefault: () => {},
+            stopPropagation: () => {},
+          };
+          showContextMenu(syntheticEvent, section);
+
+          // Optional: Haptic feedback
+          if (navigator.vibrate) {
+            navigator.vibrate(50);
           }
-        }, 1000);
+        }
       }, 500);
     });
 
-    section.addEventListener("touchend", (e) => {
-      clearTimeout(pressTimer);
-      if (longPressActive) {
-        e.preventDefault();
-      }
+    section.addEventListener("touchmove", () => {
+      touchMoved = true;
+      clearTimeout(touchTimer);
     });
 
-    section.addEventListener("touchmove", () => {
-      clearTimeout(pressTimer);
-      longPressActive = false;
+    section.addEventListener("touchend", () => {
+      clearTimeout(touchTimer);
+    });
+
+    section.addEventListener("touchcancel", () => {
+      clearTimeout(touchTimer);
     });
 
     container.appendChild(section);
