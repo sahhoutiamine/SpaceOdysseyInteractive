@@ -159,6 +159,9 @@ function showContextMenu(e, missionCard) {
   // Apply positioning
   contextMenu.style.left = x + "px";
   contextMenu.style.top = y + "px";
+
+  // Stop scrolling when menu is shown
+  document.body.style.overflow = "hidden";
 }
 
 // Hide context menu
@@ -168,6 +171,9 @@ function hideContextMenu() {
     contextMenu.style.display = "none";
   }
   currentMissionCard = null;
+
+  // Re-enable scrolling when menu is hidden
+  document.body.style.overflow = "";
 }
 
 document.addEventListener("click", () => {
