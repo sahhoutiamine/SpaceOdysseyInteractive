@@ -333,15 +333,6 @@ body {
   }
 }
 
-.context-menu .favorite {
-  color: #f39c12;
-  border-left: 3px solid #f39c12;
-}
-
-.context-menu .favorite:hover {
-  background-color: #fef9e7;
-}
-
 .missions-filters {
   display: flex;
   flex-wrap: wrap;
@@ -442,7 +433,6 @@ body {
   transform: translateY(0);
 }
 
-/* Modal Styles for Add/Edit */
 .edit-modal {
   position: fixed;
   top: 0;
@@ -614,15 +604,36 @@ body {
 
 .context-menu li.edit {
   color: #3498db;
+  border-left: 3px solid #3498db;
+}
+.context-menu li.edit:hover {
+  background-color: rgba(196, 228, 239, 0.792);
 }
 
 .context-menu li.delete {
   color: #e74c3c;
+  border-left: 3px solid #e74c3c;
+}
+.context-menu li.delete:hover {
+  background-color: rgb(255, 228, 232);
 }
 
 .context-menu li.cancel {
-  color: #95a5a6;
+  color: #646464;
+  border-left: 3px solid #646464;
   border-top: 1px solid #e0e0e0;
+}
+.context-menu li.cancel:hover {
+  background-color: rgba(221, 221, 221, 0.779);
+}
+
+.context-menu .favorite {
+  color: #f39c12;
+  border-left: 3px solid #f39c12;
+}
+
+.context-menu .favorite:hover {
+  background-color: #fef9e7;
 }
 
 /* Responsive Styles */
