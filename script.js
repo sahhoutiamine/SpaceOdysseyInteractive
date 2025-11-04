@@ -875,6 +875,9 @@ document.addEventListener("click", () => {
   }
 });
 
+// =========================
+// Edit Mission Handler
+// =========================
 function editMissionHandler() {
   if (!currentMissionCard) {
     console.error("No mission card selected");
@@ -985,6 +988,8 @@ function editMissionHandler() {
   editForm.addEventListener("submit", function (e) {
     e.preventDefault();
 
+    const originalName = missionData.name; // Store original name before updating
+
     const updatedMission = {
       name: document.getElementById("editName").value.trim(),
       agency: document.getElementById("editAgency").value,
@@ -1029,6 +1034,32 @@ function editMissionHandler() {
     // Update missionsData array
     if (missionsData[index]) {
       missionsData[index] = { ...missionsData[index], ...updatedMission };
+    }
+
+    // **NEW: Update favorite mission if it exists**
+    const favoriteIndex = favoriteMissions.findIndex(
+      (fav) => fav.name === originalName
+    );
+    if (favoriteIndex !== -1) {
+      // Update the favorite mission with new data, but keep the id and addedDate
+      favoriteMissions[favoriteIndex] = {
+        ...favoriteMissions[favoriteIndex],
+        name: updatedMission.name,
+        agency: updatedMission.agency,
+        launchDate: updatedMission.launchDate,
+        type: updatedMission.type,
+        image: updatedMission.image,
+        description: updatedMission.description,
+      };
+
+      // Save updated favorites to localStorage
+      localStorage.setItem(
+        "favoriteMissions",
+        JSON.stringify(favoriteMissions)
+      );
+
+      // Update favorites sidebar if open
+      updateFavoritesSidebar();
     }
 
     // Save to localStorage
