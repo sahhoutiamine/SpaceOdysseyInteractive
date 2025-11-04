@@ -514,7 +514,7 @@ body {
 .modal-content textarea:focus,
 .modal-content select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #000000;
 }
 
 .modal-content textarea {
@@ -603,7 +603,6 @@ body {
 }
 
 .context-menu li.edit {
-  color: #3498db;
   border-left: 3px solid #3498db;
 }
 .context-menu li.edit:hover {
@@ -611,7 +610,7 @@ body {
 }
 
 .context-menu li.delete {
-  color: #e74c3c;
+  color: black;
   border-left: 3px solid #e74c3c;
 }
 .context-menu li.delete:hover {
@@ -619,7 +618,7 @@ body {
 }
 
 .context-menu li.cancel {
-  color: #646464;
+  color: black;
   border-left: 3px solid #646464;
   border-top: 1px solid #e0e0e0;
 }
@@ -628,7 +627,7 @@ body {
 }
 
 .context-menu .favorite {
-  color: #f39c12;
+  color: black;
   border-left: 3px solid #f39c12;
 }
 

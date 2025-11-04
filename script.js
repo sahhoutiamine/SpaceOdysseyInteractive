@@ -486,7 +486,6 @@ function addFavoritesStyles() {
     .favorite-card:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-      border-color: rgba(236, 72, 153, 0.5);
     }
 
     .favorite-image {
