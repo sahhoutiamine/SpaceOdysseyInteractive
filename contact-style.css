@@ -263,6 +263,13 @@ body {
   filter: brightness(1);
 }
 
+.error-message {
+  color: #e74c3c;
+  font-size: 0.8rem;
+  margin-top: 5px;
+  display: block;
+}
+
 .contact-container {
   display: flex;
   max-width: 1200px;
@@ -372,9 +379,11 @@ label {
 input,
 textarea {
   border: none;
-  border-bottom: 1px solid #aaa;
+  border: 1px solid #000000;
+  border-radius: 5px;
   outline: none;
-  padding: 8px 0;
+  margin-top: 10px;
+  padding: 8px 8px;
   font-size: 14px;
   transition: 0.3s;
 }

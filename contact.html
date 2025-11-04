@@ -65,23 +65,23 @@
         <form action="contact-success.html" method="get">
           <div class="form-row">
             <div class="input-group">
-              <label>First Name</label>
+              <label>First Name <span style="color: red">*</span></label>
               <input type="text" required />
             </div>
             <div class="input-group">
-              <label>Last Name</label>
+              <label>Last Name <span style="color: red">*</span></label>
               <input type="text" required />
             </div>
           </div>
 
           <div class="form-row">
             <div class="input-group">
-              <label>Email</label>
-              <input type="email" required />
+              <label>Email <span style="color: red">*</span></label>
+              <input type="email" required placeholder="example@exp.uo" />
             </div>
             <div class="input-group">
               <label>Phone Number</label>
-              <input type="text" />
+              <input type="tel" name="phone" required />
             </div>
           </div>
 
@@ -105,7 +105,7 @@
           </div>
 
           <div class="input-group">
-            <label>Message</label>
+            <label>Message <span style="color: red">*</span></label>
             <textarea placeholder="Write your message.."></textarea>
           </div>
 
@@ -212,5 +212,6 @@
     </footer>
 
     <script src="script.js"></script>
+    <script src="form.js"></script>
   </body>
 </html>
