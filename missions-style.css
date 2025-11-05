@@ -328,8 +328,11 @@ body {
 
 @media screen and (max-width: 480px) {
   .search-bar input {
-    width: 85%;
+    width: 90%;
     font-size: 0.85rem;
+  }
+  .search-bar input:focus {
+    width: 95%;
   }
 }
 
