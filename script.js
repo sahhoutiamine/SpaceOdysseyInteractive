@@ -159,12 +159,21 @@ function createFavoritesSidebar() {
         </svg>
         Favorite Missions
       </h2>
-      <button class="close-sidebar" title="Close">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
+      <div class="header-actions">
+        <button class="download-pdf-btn" title="Export to PDF">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+        </button>
+        <button class="close-sidebar" title="Close">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
     </div>
     <div class="sidebar-content" id="favoritesContent">
       ${renderFavorites()}
@@ -178,6 +187,10 @@ function createFavoritesSidebar() {
     sidebar.classList.add("active");
   }, 10);
 
+  // Download PDF button handler
+  sidebar.querySelector(".download-pdf-btn").addEventListener("click", () => {
+    exportFavoritesToPDF(); // or exportFavoritesToHTML() if using the HTML version
+  });
   // Close button handler
   sidebar.querySelector(".close-sidebar").addEventListener("click", () => {
     toggleFavoritesSidebar();
@@ -277,6 +290,239 @@ function removeFromFavorite(missionId) {
   localStorage.setItem("favoriteMissions", JSON.stringify(favoriteMissions));
   showNotification("Mission removed from favorites!", "success");
   updateFavoritesSidebar();
+}
+
+// =========================
+// PDF Export Functionality
+// =========================
+function exportFavoritesToPDF() {
+  if (favoriteMissions.length === 0) {
+    showNotification("No favorites to export!", "warning");
+    return;
+  }
+
+  showNotification("Generating PDF...", "info");
+
+  // Create a temporary container for PDF content
+  const pdfContainer = document.createElement("div");
+  pdfContainer.style.cssText = `
+    position: fixed;
+    left: -9999px;
+    top: 0;
+    width: 800px;
+    padding: 40px;
+    background: white;
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  `;
+
+  // Get current date for the report
+  const currentDate = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  // Build HTML content for PDF
+  pdfContainer.innerHTML = `
+    <div id="pdfContent" style="max-width: 800px; margin: 0 auto;">
+      <div class="header" style="text-align: center; margin-bottom: 40px; border-bottom: 3px solid #ec4899; padding-bottom: 20px;">
+        <h1 style="font-size: 36px; color: #1a1a2e; margin-bottom: 10px;">🚀 My Favorite Space Missions</h1>
+        <p style="font-size: 16px; color: #666;">Generated on ${currentDate}</p>
+        <span class="mission-count" style="background: linear-gradient(135deg, #ec4899, #ef4444); color: white; padding: 8px 16px; border-radius: 20px; display: inline-block; margin-top: 10px; font-weight: 600;">
+          ${favoriteMissions.length} Mission${
+    favoriteMissions.length !== 1 ? "s" : ""
+  }
+        </span>
+      </div>
+      
+      ${favoriteMissions
+        .map(
+          (mission, index) => `
+        <div class="mission" style="page-break-inside: avoid; margin-bottom: 30px; border: 2px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+          <div class="mission-header" style="background: linear-gradient(135deg, #1a1a2e, #16213e); color: white; padding: 20px;">
+            <div class="mission-title" style="font-size: 24px; font-weight: 700; margin-bottom: 12px;">${
+              index + 1
+            }. ${mission.name}</div>
+            <div class="mission-badges" style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <span class="badge" style="background: rgba(236, 72, 153, 0.2); color: #ec4899; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid rgba(236, 72, 153, 0.3);">🏢 ${
+                mission.agency
+              }</span>
+              <span class="badge" style="background: rgba(236, 72, 153, 0.2); color: #ec4899; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid rgba(236, 72, 153, 0.3);">🔬 ${
+                mission.type
+              }</span>
+              <span class="badge" style="background: rgba(236, 72, 153, 0.2); color: #ec4899; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid rgba(236, 72, 153, 0.3);">📅 ${new Date(
+                mission.launchDate
+              ).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}</span>
+            </div>
+          </div>
+          <div class="mission-body" style="padding: 20px; background: white;">
+            ${
+              mission.image
+                ? `<img src="${mission.image}" alt="${mission.name}" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;" onerror="this.style.display='none'">`
+                : ""
+            }
+            <div class="mission-description" style="font-size: 15px; line-height: 1.6; color: #444;">
+              ${mission.description}
+            </div>
+            <div class="mission-meta" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e7eb; font-size: 13px; color: #666;">
+              Added to favorites: ${new Date(
+                mission.addedDate
+              ).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+            </div>
+          </div>
+        </div>
+      `
+        )
+        .join("")}
+      
+      <div class="footer" style="margin-top: 40px; text-align: center; padding-top: 20px; border-top: 2px solid #e5e7eb; color: #999; font-size: 12px;">
+        <p>Generated from Space Missions Explorer</p>
+        <p>Total Favorites: ${
+          favoriteMissions.length
+        } | Export Date: ${currentDate}</p>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(pdfContainer);
+
+  // Use html2canvas and jsPDF to generate and download PDF
+  setTimeout(() => {
+    const element = document.getElementById("pdfContent");
+
+    html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      width: element.scrollWidth,
+      height: element.scrollHeight,
+    })
+      .then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jspdf.jsPDF("p", "mm", "a4");
+        const imgWidth = 210; // A4 width in mm
+        const pageHeight = 295; // A4 height in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+
+        // Download the PDF
+        pdf.save(
+          `Favorite-Space-Missions-${
+            new Date().toISOString().split("T")[0]
+          }.pdf`
+        );
+
+        // Clean up
+        document.body.removeChild(pdfContainer);
+        showNotification("PDF downloaded successfully!", "success");
+      })
+      .catch((error) => {
+        console.error("Error generating PDF:", error);
+        document.body.removeChild(pdfContainer);
+        showNotification("Error generating PDF. Please try again.", "error");
+
+        // Fallback to simple text PDF
+        generateSimplePDF();
+      });
+  }, 1000);
+}
+
+// Fallback PDF generation without images
+function generateSimplePDF() {
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF();
+
+  // Add title
+  pdf.setFontSize(20);
+  pdf.setTextColor(26, 26, 46);
+  pdf.text("🚀 My Favorite Space Missions", 20, 20);
+
+  // Add date
+  pdf.setFontSize(12);
+  pdf.setTextColor(100, 100, 100);
+  const currentDate = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  pdf.text(`Generated on ${currentDate}`, 20, 30);
+
+  // Add mission count
+  pdf.text(`Total Favorites: ${favoriteMissions.length} missions`, 20, 40);
+
+  let yPosition = 60;
+
+  favoriteMissions.forEach((mission, index) => {
+    // Check if we need a new page
+    if (yPosition > 270) {
+      pdf.addPage();
+      yPosition = 20;
+    }
+
+    // Mission title
+    pdf.setFontSize(16);
+    pdf.setTextColor(26, 26, 46);
+    pdf.text(`${index + 1}. ${mission.name}`, 20, yPosition);
+    yPosition += 10;
+
+    // Mission details
+    pdf.setFontSize(10);
+    pdf.setTextColor(100, 100, 100);
+    pdf.text(
+      `Agency: ${mission.agency} | Type: ${mission.type} | Launch: ${new Date(
+        mission.launchDate
+      ).toLocaleDateString()}`,
+      20,
+      yPosition
+    );
+    yPosition += 8;
+
+    // Mission description (truncated if too long)
+    const description =
+      mission.description.length > 200
+        ? mission.description.substring(0, 200) + "..."
+        : mission.description;
+
+    const splitDescription = pdf.splitTextToSize(description, 170);
+    pdf.text(splitDescription, 20, yPosition);
+    yPosition += splitDescription.length * 5 + 15;
+
+    // Add separator
+    pdf.setDrawColor(200, 200, 200);
+    pdf.line(20, yPosition - 5, 190, yPosition - 5);
+    yPosition += 10;
+  });
+
+  // Add footer
+  pdf.setFontSize(8);
+  pdf.setTextColor(150, 150, 150);
+  pdf.text("Generated from Space Missions Explorer", 20, 285);
+
+  // Download the PDF
+  pdf.save(
+    `Favorite-Space-Missions-${new Date().toISOString().split("T")[0]}.pdf`
+  );
+  showNotification("PDF downloaded successfully!", "success");
 }
 
 // =========================
@@ -398,6 +644,38 @@ function addFavoritesStyles() {
 
     .sidebar-header h2 svg {
       color: #ec4899;
+    }
+
+    /* Header Actions Container */
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    
+    /* Download PDF Button */
+    .download-pdf-btn {
+      background: rgba(34, 197, 94, 0.2);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #22c55e;
+    }
+    
+    .download-pdf-btn:hover {
+      background: rgba(34, 197, 94, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
+    
+    .download-pdf-btn:active {
+      transform: translateY(0);
     }
 
     .close-sidebar {
@@ -581,6 +859,16 @@ function addFavoritesStyles() {
 
       .favorite-card {
         margin-bottom: 12px;
+      }
+
+      .download-pdf-btn {
+        width: 36px;
+        height: 36px;
+      }
+      
+      .download-pdf-btn svg {
+        width: 18px;
+        height: 18px;
       }
     }
 
